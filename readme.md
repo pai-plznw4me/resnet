@@ -21,8 +21,8 @@
 
 6. model restore
  - [x] best model restore
- - [x] model - re-training
- - [x] model - re-eval
+ - [x] model re-training after model reconstruct
+ - [x] model re-eval after model reconstruct
 
 ##  구현 된 기능들.
 
