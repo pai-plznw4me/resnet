@@ -89,6 +89,8 @@ class ResnetCifar10(Resnet):
         train_merged, train_cost, train_acc, global_step = self.sess.run(eval_fetch, feed_dict=eval_feed)
         test_merged, test_cost, test_acc, global_step = self.sess.run(eval_fetch, feed_dict=train_feed)
 
+        print(global_step)
+
         print('step : {} {:.4f} {:.4f} {:.4f} {:.4f}'.format(global_step, test_cost, test_acc, train_acc, train_cost))
         self.train_writer.add_summary(train_merged, global_step=global_step)
         self.test_writer.add_summary(test_merged, global_step=global_step)
