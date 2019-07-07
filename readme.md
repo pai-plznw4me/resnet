@@ -19,6 +19,11 @@
 5. early stopping 기능
 
 
+6. model restore
+ [x] best model restore
+ [x] model - re-training
+ [x] model - re-eval
+
 ##  구현 된 기능들.
 
 
