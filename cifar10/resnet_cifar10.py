@@ -136,7 +136,7 @@ class ResnetCifar10(Resnet):
     def reconstruct(self, model_name):
         tf.reset_default_graph()
         min_loss, max_acc, step = re.split('[-_]+', model_name)
-        min_loss, max_acc, step = list(map(int, [min_loss, max_acc, step]))
+        min_loss, max_acc, step = list(map(float, [min_loss, max_acc, step]))
 
         # model path
         model_path = os.path.join(self.root_folder, 'model', model_name)
