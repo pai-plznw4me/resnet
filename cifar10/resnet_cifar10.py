@@ -136,6 +136,7 @@ class ResnetCifar10(Resnet):
     def reconstruct(self, model_name):
         tf.reset_default_graph()
         min_loss, max_acc, step = re.split('[-_]+', model_name)
+        min_loss, max_acc, step = list(map(int, [min_loss, max_acc, step]))
 
         # model path
         model_path = os.path.join(self.root_folder, 'model', model_name)
@@ -143,7 +144,6 @@ class ResnetCifar10(Resnet):
         # Graph Restore
         self.saver = tf.train.import_meta_graph('{}.meta'.format(model_path))
         graph = tf.get_default_graph()
-        print(graph.get_operations())
 
         # Reconstruct Tensor
         self.xs = graph.get_tensor_by_name('xs:0')
