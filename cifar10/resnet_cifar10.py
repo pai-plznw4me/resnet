@@ -23,7 +23,7 @@ class ResnetCifar10(Resnet):
 
         # Data Provider
         self.cifar10_provider = Cifar10Provider()
-        super(ResnetCifar10, self).__init__('resnet', self.phase_train)
+        super(ResnetCifar10, self).__init__(self.root_folder, self.phase_train)
 
         # Augmentation
         self.xs_aug = images_augmentation(self.xs, self.phase_aug)
