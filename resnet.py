@@ -132,3 +132,4 @@ class Resnet(object):
         return self.saver
 
     def restore(self):
+        pass;
