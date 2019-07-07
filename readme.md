@@ -20,9 +20,9 @@
 
 
 6. model restore
- [x] best model restore
- [x] model - re-training
- [x] model - re-eval
+ - [x] best model restore
+ - [x] model - re-training
+ - [x] model - re-eval
 
 ##  구현 된 기능들.
 
