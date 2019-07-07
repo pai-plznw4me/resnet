@@ -1,7 +1,7 @@
 import tensorflow as tf
 from resnet import Resnet
 from augmentator import images_augmentation
-#from dataprovider import Cifar10Provider
+from dataprovider import Cifar10Provider
 
 
 class ResnetCifar10(Resnet):
