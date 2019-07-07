@@ -130,3 +130,5 @@ class Resnet(object):
         os.makedirs(save_root_folder, exist_ok=True)
         print('Saver was generated')
         return self.saver
+
+    def restore(self):

@@ -84,8 +84,7 @@ class ResnetCifar10(Resnet):
         eval_xs, eval_ys = self.cifar10_provider.x_test, self.cifar10_provider.y_test
 
         eval_fetch = [self.merged, self.loss, self.acc, self.global_step]
-        eval_feed = {self.xs: train_xs, self.ys: train_ys, self.phase_train: False, self.phase_aug:
-                     }
+        eval_feed = {self.xs: train_xs, self.ys: train_ys, self.phase_train: False, self.phase_aug: False}
         train_feed = {self.xs: eval_xs, self.ys: eval_ys, self.phase_train: False, self.phase_aug: False}
         train_merged, train_cost, train_acc, global_step = self.sess.run(eval_fetch, feed_dict=eval_feed)
         test_merged, test_cost, test_acc, global_step = self.sess.run(eval_fetch, feed_dict=train_feed)
