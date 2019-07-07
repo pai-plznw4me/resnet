@@ -44,6 +44,9 @@ class ResnetCifar10(Resnet):
         # generate saver
         self.saver = self.generator_saver()
 
+        # create Sessino
+        self.sess = self.generate_session()
+
     def model_a(self):
         # Stem
         layer = tf.layers.Conv2D(16, 3, 1, 'same', activation=tf.nn.relu, name='stem')(self.xs_aug)
