@@ -113,8 +113,8 @@ class Resnet(object):
         init = tf.group(tf.global_variables_initializer(),
                         tf.local_variables_initializer())
         self.sess.run(init)
-        return self.sess
         print('Session was Created')
+        return self.sess
 
     def generate_tensorwriter(self):
         # tensorboard

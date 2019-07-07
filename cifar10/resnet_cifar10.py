@@ -84,16 +84,19 @@ class ResnetCifar10(Resnet):
         eval_xs, eval_ys = self.cifar10_provider.x_test, self.cifar10_provider.y_test
 
         eval_fetch = [self.merged, self.loss, self.acc, self.global_step]
-        eval_feed = {self.xs: train_xs, self.ys: train_ys, self.phase_train: False, self.phase_aug: False}
+        eval_feed = {self.xs: train_xs, self.ys: train_ys, self.phase_train: False, self.phase_aug:
+                     }
         train_feed = {self.xs: eval_xs, self.ys: eval_ys, self.phase_train: False, self.phase_aug: False}
         train_merged, train_cost, train_acc, global_step = self.sess.run(eval_fetch, feed_dict=eval_feed)
         test_merged, test_cost, test_acc, global_step = self.sess.run(eval_fetch, feed_dict=train_feed)
 
         print(global_step)
 
-        print('step : {} {:.4f} {:.4f} {:.4f} {:.4f}'.format(global_step, test_cost, test_acc, train_acc, train_cost))
+        print('step : {} {:.4f} {:.4f} {:.4f} {:.4f}'.format(global_step, test_cost, test_acc, train_cost, train_acc))
         self.train_writer.add_summary(train_merged, global_step=global_step)
+        self.train_writer.flush()
         self.test_writer.add_summary(test_merged, global_step=global_step)
+        self.test_writer.flush()
 
 
 if __name__ == '__main__':
