@@ -159,7 +159,7 @@ class ResnetCifar10(Resnet):
         self.train_op = tf.get_collection(tf.GraphKeys.TRAIN_OP)[0]
 
         # Reconstruct Variable
-        self.global_step = graph.get_tensor_by_name(name='global_step')
+        self.global_step = graph.get_tensor_by_name(name='global_step:0')
 
         # Create Session
         self.sess = self.generate_session()
