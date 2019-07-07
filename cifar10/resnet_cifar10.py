@@ -143,6 +143,7 @@ class ResnetCifar10(Resnet):
         # Graph Restore
         self.saver = tf.train.import_meta_graph('{}.meta'.format(model_path))
         graph = tf.get_default_graph()
+        print(graph.get_operations())
 
         # Reconstruct Tensor
         self.xs = graph.get_tensor_by_name('xs:0')
