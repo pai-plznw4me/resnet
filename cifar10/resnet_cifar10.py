@@ -6,14 +6,17 @@ from dataprovider import Cifar10Provider
 
 class ResnetCifar10(Resnet):
 
-    def __init__(self):
+    def __init__(self, root_folder):
         # define input placeholder
         self.n_classes = 10
+        self.root_folder = root_folder
         self.xs = tf.placeholder(shape=[None, 32, 32, 3], dtype=tf.float32, name='xs')
         self.ys = tf.placeholder(shape=[None], dtype=tf.int32, name='ys')
         self.lr = tf.placeholder(shape=[], dtype=tf.float32, name='lr')
         self.phase_train = tf.placeholder(shape=[], dtype=tf.bool, name='phase_train')
         self.phase_aug = tf.placeholder(shape=[], dtype=tf.bool, name='phase_aug')
+        self.min_loss = 10000.
+        self.max_acc = 0
 
         # generate global step
         self.global_step = tf.train.create_global_step(graph=None)
@@ -86,17 +89,18 @@ class ResnetCifar10(Resnet):
         eval_fetch = [self.merged, self.loss, self.acc, self.global_step]
         eval_feed = {self.xs: train_xs, self.ys: train_ys, self.phase_train: False, self.phase_aug: False}
         train_feed = {self.xs: eval_xs, self.ys: eval_ys, self.phase_train: False, self.phase_aug: False}
-        train_merged, train_cost, train_acc, global_step = self.sess.run(eval_fetch, feed_dict=eval_feed)
-        test_merged, test_cost, test_acc, global_step = self.sess.run(eval_fetch, feed_dict=train_feed)
+        train_merged, train_loss, train_acc, global_step = self.sess.run(eval_fetch, feed_dict=eval_feed)
+        test_merged, test_loss, test_acc, global_step = self.sess.run(eval_fetch, feed_dict=train_feed)
 
-        print(global_step)
-
-        print('step : {} {:.4f} {:.4f} {:.4f} {:.4f}'.format(global_step, test_cost, test_acc, train_cost, train_acc))
+        print('step : {} {:.4f} {:.4f} {:.4f} {:.4f}'.format(global_step, test_loss, test_acc, train_loss, train_acc))
         self.train_writer.add_summary(train_merged, global_step=global_step)
         self.train_writer.flush()
         self.test_writer.add_summary(test_merged, global_step=global_step)
         self.test_writer.flush()
 
+        if test_loss < self.min_loss:
+            self.min_loss = test_loss
+            self.saver.save(self.sess, '{}/model/{:.4f}_{:.4f}'.format(self.root_folder, test_loss, test_acc),
+                            global_step=self.global_step)
+            print('Model Saved!')
 
-if __name__ == '__main__':
-    resnet_cifar10 = ResnetCifar10()

@@ -131,5 +131,3 @@ class Resnet(object):
         print('Saver was generated')
         return self.saver
 
-    def restore(self):
-        pass;
