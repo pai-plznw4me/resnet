@@ -17,7 +17,7 @@ class ResnetCifar10(Resnet):
 
         self.global_step = tf.train.create_global_step(graph=None)
         # Data Provider
-        # self.cifar10_provider = Cifar10Provider()
+        self.cifar10_provider = Cifar10Provider()
         super(ResnetCifar10, self).__init__('resnet', self.phase_train)
 
         # Augmentation
