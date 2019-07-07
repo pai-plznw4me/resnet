@@ -162,11 +162,10 @@ class ResnetCifar10(Resnet):
         with tf.variable_scope('', reuse=True):
             self.global_step = tf.get_variable(name='global_step', dtype=tf.int64)
 
-
         # Create Session
         self.sess = self.generate_session()
 
         # Variable values was restored
         self.saver.restore(self.sess, model_path)
 
-        print('{} model was recontructed!'.format(model_name))
+        print('{} model was reconstruct!'.format(model_name))
