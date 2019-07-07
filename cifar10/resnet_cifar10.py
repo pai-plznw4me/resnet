@@ -144,7 +144,7 @@ class ResnetCifar10(Resnet):
         self.saver = tf.train.import_meta_graph('{}.meta'.format(model_path))
         graph = tf.get_default_graph()
 
-        # Reconstruct
+        # Reconstruct Tensor
         self.xs = graph.get_tensor_by_name('xs:0')
         self.ys = graph.get_tensor_by_name('ys:0')
         self.lr = graph.get_tensor_by_name('lr:0')
@@ -152,13 +152,15 @@ class ResnetCifar10(Resnet):
         self.phase_aug = graph.get_tensor_by_name('phase_aug:0')
         self.loss = graph.get_tensor_by_name('loss:0')
         self.acc = graph.get_tensor_by_name('accuracy:0')
-        with tf.variable_scope('', reuse=True):
-            self.global_step = tf.get_variable(name='global_step')
-
         self.merged = graph.get_tensor_by_name('Merge/MergeSummary:0')
         self.min_loss = min_loss
         self.max_acc = max_acc
         self.train_op = tf.get_collection(tf.GraphKeys.TRAIN_OP)[0]
+
+        # Reconstruct Variable
+        with tf.variable_scope('', reuse=True):
+            self.global_step = tf.get_variable(name='global_step')
+
 
         # Create Session
         self.sess = self.generate_session()
