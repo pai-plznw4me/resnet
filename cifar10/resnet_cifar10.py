@@ -2,6 +2,8 @@ import tensorflow as tf
 from resnet import Resnet
 from augmentator import images_augmentation
 from dataprovider import Cifar10Provider
+import os
+import re
 
 
 class ResnetCifar10(Resnet):
@@ -72,8 +74,9 @@ class ResnetCifar10(Resnet):
     def training(self, batch_size, lr, max_iter):
         for i in range(max_iter):
             batch_xs, batch_ys = self.cifar10_provider.next_batch(batch_size)
-            train_feed = {self.xs: batch_xs, self.ys: batch_ys, self.lr: lr, self.phase_train: True,
-                          self.phase_aug: False}
+            train_feed = {self.xs: batch_xs, self.ys: batch_ys, self.lr: lr,
+                          self.phase_train: True,
+                          self.phase_aug: True}
 
             self.sess.run(self.train_op, feed_dict=train_feed)
 
@@ -104,3 +107,57 @@ class ResnetCifar10(Resnet):
                             global_step=self.global_step)
             print('Model Saved!')
 
+    def best_model(self):
+        """
+        loss 가 가장 작은 model 을 불러옵니다.
+        모델의 저장될 때 파일이름은 아래와 같습니다.
+        root_folder/model/{loss}_{acc}-{step}.index
+        root_folder/model/{loss}_{acc}-{step}.data
+        root_folder/model/{loss}_{acc}-{step}.meta
+
+        :return: str, model name
+        """
+
+        # TODO assert 코드 넣기
+        model_dir = os.path.join(self.root_folder, 'model')
+        files = os.listdir(model_dir)
+
+        def _key_func(path):
+            fname = os.path.splitext(path)[0]
+            loss = fname.split('_')[0]
+            return loss
+        files = sorted(files, key=_key_func)
+        return os.path.splitext(files[0])[0]
+
+    def best_model_reconsturct(self):
+        model_name = self.best_model()
+        self.reconstruct(model_name)
+
+    def reconstruct(self, model_name):
+        tf.reset_default_graph()
+        min_loss, max_acc, step = re.split('[-_]+', model_name)
+
+        # model path
+        model_path = os.path.join(self.root_folder, 'model', model_name)
+
+        # Graph Restore
+        self.saver = tf.train.import_meta_graph('{}.meta'.format(model_path))
+        graph = tf.get_default_graph()
+
+        # Reconstruct
+        self.xs = graph.get_tensor_by_name('xs:0')
+        self.ys = graph.get_tensor_by_name('ys:0')
+        self.lr = graph.get_tensor_by_name('lr:0')
+        self.phase_train = graph.get_tensor_by_name('phase_train:0')
+        self.phase_aug = graph.get_tensor_by_name('phase_aug:0')
+        self.loss = graph.get_tensor_by_name('loss:0')
+        self.acc = graph.get_tensor_by_name('accuracy:0')
+        self.min_loss = min_loss
+        self.max_acc = max_acc
+        self.train_op = tf.get_collection(tf.GraphKeys.TRAIN_OP)[0]
+
+        # Create Session
+        self.sess = self.generate_session()
+
+        # Variable values was restored
+        self.saver.restore(self.sess, model_path)
