@@ -67,7 +67,9 @@ class ResnetCifar10(Resnet):
     def training(self, batch_size, lr, max_iter):
         for i in range(max_iter):
             batch_xs, batch_ys = self.cifar10_provider.next_batch(batch_size)
-            train_feed = {self.xs: batch_xs, self.ys: batch_ys, self.lr: lr, self.phase_train: True}
+            train_feed = {self.xs: batch_xs, self.ys: batch_ys, self.lr: lr, self.phase_train: True,
+                          self.phase_aug: False}
+
             self.sess.run(self.train_op, feed_dict=train_feed)
 
     def eval(self, global_step):
@@ -80,8 +82,8 @@ class ResnetCifar10(Resnet):
         eval_xs, eval_ys = self.cifar10_provider.x_test, self.cifar10_provider.y_test
 
         eval_fetch = [self.merged, self.loss, self.acc]
-        eval_feed = {self.xs: train_xs, self.ys: train_ys, self.phase_train: False}
-        train_feed = {self.xs: eval_xs, self.ys: eval_ys, self.phase_train: False}
+        eval_feed = {self.xs: train_xs, self.ys: train_ys, self.phase_train: False, self.phase_aug: False}
+        train_feed = {self.xs: eval_xs, self.ys: eval_ys, self.phase_train: False, self.phase_aug: False}
         train_merged, train_cost, train_acc = self.sess.run(eval_fetch, feed_dict=eval_feed)
         test_merged, test_cost, test_acc = self.sess.run(eval_fetch, feed_dict=train_feed)
 
