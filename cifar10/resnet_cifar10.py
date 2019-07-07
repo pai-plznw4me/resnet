@@ -159,7 +159,7 @@ class ResnetCifar10(Resnet):
 
         # Reconstruct Variable
         with tf.variable_scope('', reuse=True):
-            self.global_step = tf.get_variable(name='global_step')
+            self.global_step = tf.get_variable(name='global_step', dtype=tf.int64)
 
 
         # Create Session
