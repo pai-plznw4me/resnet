@@ -161,3 +161,5 @@ class ResnetCifar10(Resnet):
 
         # Variable values was restored
         self.saver.restore(self.sess, model_path)
+
+        print('{} model was recontructed!')
