@@ -15,7 +15,9 @@ class ResnetCifar10(Resnet):
         self.phase_train = tf.placeholder(shape=[], dtype=tf.bool, name='phase_train')
         self.phase_aug = tf.placeholder(shape=[], dtype=tf.bool, name='phase_aug')
 
+        # generate global step
         self.global_step = tf.train.create_global_step(graph=None)
+
         # Data Provider
         self.cifar10_provider = Cifar10Provider()
         super(ResnetCifar10, self).__init__('resnet', self.phase_train)
@@ -72,7 +74,7 @@ class ResnetCifar10(Resnet):
 
             self.sess.run(self.train_op, feed_dict=train_feed)
 
-    def eval(self, global_step):
+    def eval(self):
         """
         1. eval에서 나온 acc, loss 을 tensorboard 에 추가한다
         :return:
@@ -87,8 +89,8 @@ class ResnetCifar10(Resnet):
         train_merged, train_cost, train_acc = self.sess.run(eval_fetch, feed_dict=eval_feed)
         test_merged, test_cost, test_acc = self.sess.run(eval_fetch, feed_dict=train_feed)
 
-        self.train_writer.add_summary(train_merged, global_step=global_step)
-        self.test_writer.add_summary(test_merged, global_step=global_step)
+        self.train_writer.add_summary(train_merged, global_step=self.global_step)
+        self.test_writer.add_summary(test_merged, global_step=self.global_step)
 
 
 if __name__ == '__main__':
