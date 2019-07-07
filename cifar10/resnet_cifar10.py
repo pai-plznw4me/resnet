@@ -61,8 +61,8 @@ class ResnetCifar10(Resnet):
         logits = tf.layers.Dense(self.n_classes)(layer)
         return tf.identity(logits, 'logits')
 
-    def training(self, batch_size, lr):
-        for i in range(batch_size):
+    def training(self, batch_size, lr, max_iter):
+        for i in range(max_iter):
             batch_xs, batch_ys = self.cifar10_provider.next_batch(batch_size)
             train_feed = {self.xs: batch_xs, self.ys: batch_ys, self.lr: lr, self.phase_train: True}
             self.sess.run(self.train_op, feed_dict=train_feed)
