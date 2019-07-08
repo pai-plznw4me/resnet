@@ -57,15 +57,16 @@ class ResnetCifar10(Resnet):
     def model_a(self):
         # Stem
         layer = tf.layers.Conv2D(16, 3, 1, 'same', activation=tf.nn.relu, name='stem')(self.xs_aug)
+
         # Residual
         layer = self.residual_block(layer, 2, 16, 'block_1')
-        layer = tf.layers.MaxPooling2D(2, 2)(layer)
+        layer = tf.layers.MaxPooling2D(2, 2, name='block_1_pool')(layer)
         layer = self.residual_block(layer, 2, 32, 'block_2')
-        layer = tf.layers.MaxPooling2D(2, 2)(layer)
+        layer = tf.layers.MaxPooling2D(2, 2, name='block_2_pool')(layer)
         layer = self.residual_block(layer, 2, 64, 'block_3')
-        layer = tf.layers.MaxPooling2D(2, 2)(layer)
+        layer = tf.layers.MaxPooling2D(2, 2, name='block_3_pool')(layer)
         layer = self.residual_block(layer, 2, 128, 'block_4')
-        layer = tf.layers.AveragePooling2D(4, 1)(layer)
+        layer = tf.layers.AveragePooling2D(4, 1, name='global_average_pool')(layer)
         layer = tf.layers.Flatten()(layer)
 
         logits = tf.layers.Dense(self.n_classes)(layer)

@@ -72,8 +72,7 @@ class Resnet(object):
             if input_xs.shape[-1] != filters:
                 input_xs = tf.layers.Conv2D(filters, 1, 1, 'same',
                                             activation=tf.nn.relu)(input_xs)
-
-            return layer + input_xs
+            return  tf.identity(layer + input_xs, name='output')
 
     @staticmethod
     def get_loss(ys, logits):
