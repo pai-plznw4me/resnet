@@ -57,6 +57,24 @@ class ClassActivationMap(object):
         return np.stack(overlay_images)
 
 
+class FilterVisualization(object):
+    def __init__(self, saved_model):
+        saver = tf.train.import_meta_graph('{}.meta'.format(saved_model))
+
+        # restore Session
+        self.sess = tf.Session()
+        saver.restore(self.sess, saved_model)
+
+        # reconstruct tensor
+        self.xs = tf.get_default_graph().get_tensor_by_name('xs:0')
+        self.phase_train = tf.get_default_graph().get_tensor_by_name('phase_train:0')
+        self.phase_aug = tf.get_default_graph().get_tensor_by_name('phase_aug:0')
+
+    def get_kernel(self, sample_images, *kernel_names):
+        return self.sess.run(kernel_names,
+                             feed_dict={self.xs: sample_images, self.phase_train: False, self.phase_aug: False})
+
+
 def generate_stitch_images(sample_images, stitch_h, stitch_w):
     assert len(sample_images) == stitch_h * stitch_w
 
@@ -89,4 +107,3 @@ if __name__ == '__main__':
     stitch_images = generate_stitch_images(act_images, 10, 10)
     plt.imshow(stitch_images)
     plt.show()
-
