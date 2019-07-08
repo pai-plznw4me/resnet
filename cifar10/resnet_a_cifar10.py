@@ -10,6 +10,7 @@ class ResnetCifar10(Resnet):
 
     def __init__(self, root_folder ,optimizer):
         # define input placeholder
+        # TODO optimizer 원상 복귀 시키기
         self.n_classes = 10
         self.root_folder = root_folder
         self.xs = tf.placeholder(shape=[None, 32, 32, 3], dtype=tf.float32, name='xs')
